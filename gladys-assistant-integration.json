@@ -1,0 +1,705 @@
+{
+  "manifest_version": 1,
+  "type": "calendar",
+  "name": "Outlook Calendar",
+  "description": {
+    "en": "Your Outlook calendars in Gladys, each user with their own Microsoft account.",
+    "fr": "Vos calendriers Outlook dans Gladys, chaque utilisateur avec son compte Microsoft.",
+    "de": "Deine Outlook-Kalender in Gladys, jeder Benutzer mit seinem Microsoft-Konto.",
+    "es": "Sus calendarios de Outlook en Gladys, cada usuario con su cuenta de Microsoft."
+  },
+  "version": "0.1.0",
+  "docker_image": "ghcr.io/william-de71/gladys-outlook-calendar:0.1.0",
+  "gladys_version": ">=5.3.0",
+  "categories": ["services"],
+  "keywords": [
+    "outlook",
+    "microsoft",
+    "microsoft 365",
+    "office 365",
+    "exchange",
+    "hotmail",
+    "agenda",
+    "calendrier",
+    "kalender",
+    "calendario"
+  ],
+  "cover_image": "https://raw.githubusercontent.com/William-De71/gladys-outlook-calendar/main/cover.jpg",
+  "transports": ["cloud"],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "Your Microsoft app registration",
+        "fr": "Votre inscription d’application Microsoft",
+        "de": "Deine Microsoft-App-Registrierung",
+        "es": "Su registro de aplicación de Microsoft"
+      },
+      "description": {
+        "en": "Once, the administrator registers a free app in Microsoft Entra (portal.azure.com, App registrations, New registration): accounts in any directory and personal Microsoft accounts, no redirect URI; then Authentication → Allow public client flows: Yes; API permissions: Calendars.Read, User.Read, offline_access. Paste its Application (client) ID below. Each user then links their own account from “My calendars”.",
+        "fr": "Une fois, l’administrateur inscrit une application gratuite dans Microsoft Entra (portal.azure.com, Inscriptions d’applications, Nouvelle inscription) : comptes de tout annuaire et comptes Microsoft personnels, sans URI de redirection ; puis Authentification → Autoriser les flux clients publics : Oui ; Autorisations d’API : Calendars.Read, User.Read, offline_access. Collez son ID d’application (client) ci-dessous. Chaque utilisateur relie ensuite son propre compte depuis « Mes calendriers ».",
+        "de": "Einmalig registriert der Administrator eine kostenlose App in Microsoft Entra (portal.azure.com, App-Registrierungen, Neue Registrierung): Konten in allen Verzeichnissen und persönliche Microsoft-Konten, ohne Umleitungs-URI; dann Authentifizierung → Öffentliche Clientflows zulassen: Ja; API-Berechtigungen: Calendars.Read, User.Read, offline_access. Füge unten ihre Anwendungs-ID (Client) ein. Jeder Benutzer verknüpft danach sein eigenes Konto unter „Meine Kalender“.",
+        "es": "Una vez, el administrador registra una aplicación gratuita en Microsoft Entra (portal.azure.com, Registros de aplicaciones, Nuevo registro): cuentas de cualquier directorio y cuentas personales de Microsoft, sin URI de redirección; luego Autenticación → Permitir flujos de clientes públicos: Sí; Permisos de API: Calendars.Read, User.Read, offline_access. Pegue abajo su ID de aplicación (cliente). Después, cada usuario vincula su propia cuenta desde «Mis calendarios»."
+      },
+      "links": [
+        {
+          "url": "https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade",
+          "label": {
+            "en": "App registrations",
+            "fr": "Inscriptions d’applications",
+            "de": "App-Registrierungen",
+            "es": "Registros de aplicaciones"
+          }
+        },
+        {
+          "url": "https://github.com/William-De71/gladys-outlook-calendar/blob/main/docs/en.md",
+          "label": {
+            "en": "Integration documentation",
+            "fr": "Documentation de l’intégration",
+            "de": "Dokumentation der Integration",
+            "es": "Documentación de la integración"
+          }
+        }
+      ]
+    },
+    {
+      "key": "client_id",
+      "type": "string",
+      "label": {
+        "en": "Application (client) ID",
+        "fr": "ID d’application (client)",
+        "de": "Anwendungs-ID (Client)",
+        "es": "ID de aplicación (cliente)"
+      },
+      "placeholder": {
+        "en": "00000000-0000-0000-0000-000000000000",
+        "fr": "00000000-0000-0000-0000-000000000000",
+        "de": "00000000-0000-0000-0000-000000000000",
+        "es": "00000000-0000-0000-0000-000000000000"
+      },
+      "required": true
+    },
+    {
+      "key": "tenant",
+      "type": "string",
+      "label": {
+        "en": "Tenant",
+        "fr": "Locataire (tenant)",
+        "de": "Mandant (Tenant)",
+        "es": "Inquilino (tenant)"
+      },
+      "description": {
+        "en": "common: personal and work accounts (the default). consumers: personal accounts only. Or the ID or domain of your organization, for work accounts of a single organization.",
+        "fr": "common : comptes personnels et professionnels (par défaut). consumers : comptes personnels seulement. Ou l’ID ou le domaine de votre organisation, pour les comptes professionnels d’une seule organisation.",
+        "de": "common: persönliche und geschäftliche Konten (Standard). consumers: nur persönliche Konten. Oder die ID oder Domain deiner Organisation, für Geschäftskonten einer einzigen Organisation.",
+        "es": "common: cuentas personales y profesionales (por defecto). consumers: solo cuentas personales. O el ID o el dominio de su organización, para cuentas profesionales de una sola organización."
+      },
+      "placeholder": {
+        "en": "common",
+        "fr": "common",
+        "de": "common",
+        "es": "common"
+      },
+      "required": false,
+      "default": "common"
+    },
+    {
+      "key": "sync_minutes",
+      "type": "select",
+      "label": {
+        "en": "Sync every",
+        "fr": "Synchroniser toutes les",
+        "de": "Synchronisieren alle",
+        "es": "Sincronizar cada"
+      },
+      "options": [
+        {
+          "value": "5",
+          "label": {
+            "en": "5 minutes",
+            "fr": "5 minutes",
+            "de": "5 Minuten",
+            "es": "5 minutos"
+          }
+        },
+        {
+          "value": "15",
+          "label": {
+            "en": "15 minutes",
+            "fr": "15 minutes",
+            "de": "15 Minuten",
+            "es": "15 minutos"
+          }
+        },
+        {
+          "value": "30",
+          "label": {
+            "en": "30 minutes",
+            "fr": "30 minutes",
+            "de": "30 Minuten",
+            "es": "30 minutos"
+          }
+        },
+        {
+          "value": "60",
+          "label": {
+            "en": "1 hour",
+            "fr": "1 heure",
+            "de": "1 Stunde",
+            "es": "1 hora"
+          }
+        }
+      ],
+      "default": "15"
+    },
+    {
+      "key": "horizon_months",
+      "type": "select",
+      "label": {
+        "en": "Events ahead",
+        "fr": "Événements à venir",
+        "de": "Ereignisse voraus",
+        "es": "Eventos por delante"
+      },
+      "description": {
+        "en": "How far ahead events are copied into Gladys; the last 30 days are kept too.",
+        "fr": "Jusqu’où les événements sont copiés dans Gladys ; les 30 derniers jours sont gardés aussi.",
+        "de": "Wie weit voraus Ereignisse in Gladys kopiert werden; die letzten 30 Tage bleiben ebenfalls.",
+        "es": "Hasta dónde se copian los eventos en Gladys; también se conservan los últimos 30 días."
+      },
+      "options": [
+        {
+          "value": "3",
+          "label": {
+            "en": "3 months",
+            "fr": "3 mois",
+            "de": "3 Monate",
+            "es": "3 meses"
+          }
+        },
+        {
+          "value": "6",
+          "label": {
+            "en": "6 months",
+            "fr": "6 mois",
+            "de": "6 Monate",
+            "es": "6 meses"
+          }
+        },
+        {
+          "value": "12",
+          "label": {
+            "en": "12 months",
+            "fr": "12 mois",
+            "de": "12 Monate",
+            "es": "12 meses"
+          }
+        }
+      ],
+      "default": "12"
+    }
+  ],
+  "account_schema": [
+    {
+      "key": "account_intro",
+      "type": "section",
+      "label": {
+        "en": "Your Microsoft account",
+        "fr": "Votre compte Microsoft",
+        "de": "Dein Microsoft-Konto",
+        "es": "Su cuenta de Microsoft"
+      },
+      "description": {
+        "en": "Enable, then look at the calendar list below: a temporary calendar named “Microsoft: type ABCD-EFGH at microsoft.com/devicelogin” gives your sign-in code. Open that page, type the code and sign in with your Outlook, Hotmail or Microsoft 365 account. Your calendars arrive within a minute, read-only; they stay private until you share them.",
+        "fr": "Activez, puis regardez la liste des calendriers ci-dessous : un calendrier temporaire nommé « Microsoft : tapez ABCD-EFGH sur microsoft.com/devicelogin » donne votre code de connexion. Ouvrez cette page, tapez le code et connectez-vous avec votre compte Outlook, Hotmail ou Microsoft 365. Vos calendriers arrivent en une minute, en lecture seule ; ils restent privés tant que vous ne les partagez pas.",
+        "de": "Aktiviere und sieh dir dann die Kalenderliste unten an: Ein vorübergehender Kalender namens „Microsoft: gib ABCD-EFGH auf microsoft.com/devicelogin ein“ enthält deinen Anmeldecode. Öffne diese Seite, gib den Code ein und melde dich mit deinem Outlook-, Hotmail- oder Microsoft-365-Konto an. Deine Kalender kommen innerhalb einer Minute an, nur lesend; sie bleiben privat, bis du sie teilst.",
+        "es": "Active y luego mire la lista de calendarios de abajo: un calendario temporal llamado «Microsoft: escriba ABCD-EFGH en microsoft.com/devicelogin» le da su código de inicio de sesión. Abra esa página, escriba el código e inicie sesión con su cuenta de Outlook, Hotmail o Microsoft 365. Sus calendarios llegan en un minuto, en solo lectura; siguen siendo privados hasta que los comparta."
+      }
+    },
+    {
+      "key": "private_events",
+      "type": "select",
+      "label": {
+        "en": "Private events",
+        "fr": "Événements privés",
+        "de": "Private Ereignisse",
+        "es": "Eventos privados"
+      },
+      "description": {
+        "en": "Events marked private in Outlook. A shared calendar is seen by the whole household.",
+        "fr": "Les événements marqués privés dans Outlook. Un calendrier partagé est vu par toute la maison.",
+        "de": "In Outlook als privat markierte Ereignisse. Einen geteilten Kalender sieht der ganze Haushalt.",
+        "es": "Los eventos marcados como privados en Outlook. Un calendario compartido lo ve todo el hogar."
+      },
+      "options": [
+        {
+          "value": "busy",
+          "label": {
+            "en": "Shown as “Busy”",
+            "fr": "Affichés « Occupé »",
+            "de": "Als „Beschäftigt“ angezeigt",
+            "es": "Mostrados como «Ocupado»"
+          }
+        },
+        {
+          "value": "show",
+          "label": {
+            "en": "Shown with their details",
+            "fr": "Affichés avec leurs détails",
+            "de": "Mit Details angezeigt",
+            "es": "Mostrados con sus detalles"
+          }
+        },
+        {
+          "value": "skip",
+          "label": {
+            "en": "Left out",
+            "fr": "Ignorés",
+            "de": "Weggelassen",
+            "es": "Omitidos"
+          }
+        }
+      ],
+      "default": "busy"
+    },
+    {
+      "key": "declined_events",
+      "type": "select",
+      "label": {
+        "en": "Declined invitations",
+        "fr": "Invitations refusées",
+        "de": "Abgelehnte Einladungen",
+        "es": "Invitaciones rechazadas"
+      },
+      "options": [
+        {
+          "value": "skip",
+          "label": {
+            "en": "Left out",
+            "fr": "Ignorées",
+            "de": "Weggelassen",
+            "es": "Omitidas"
+          }
+        },
+        {
+          "value": "show",
+          "label": {
+            "en": "Shown",
+            "fr": "Affichées",
+            "de": "Angezeigt",
+            "es": "Mostradas"
+          }
+        }
+      ],
+      "default": "skip"
+    }
+  ],
+  "actions": [
+    {
+      "key": "check_app",
+      "timeout_seconds": 30,
+      "label": {
+        "en": "Check the app registration",
+        "fr": "Vérifier l’inscription d’application",
+        "de": "App-Registrierung prüfen",
+        "es": "Comprobar el registro de aplicación"
+      },
+      "description": {
+        "en": "Asks Microsoft for a sign-in code with this app (thrown away) and says what is wrong if it refuses.",
+        "fr": "Demande à Microsoft un code de connexion avec cette application (jeté) et dit ce qui ne va pas s’il refuse.",
+        "de": "Fragt Microsoft mit dieser App nach einem Anmeldecode (verworfen) und sagt, was falsch ist, wenn es ablehnt.",
+        "es": "Pide a Microsoft un código de inicio de sesión con esta aplicación (descartado) y dice qué falla si lo rechaza."
+      }
+    },
+    {
+      "key": "sync_now",
+      "timeout_seconds": 120,
+      "label": {
+        "en": "Sync now",
+        "fr": "Synchroniser maintenant",
+        "de": "Jetzt synchronisieren",
+        "es": "Sincronizar ahora"
+      },
+      "description": {
+        "en": "Reads the Outlook calendars of every linked user again, without waiting for the next sync.",
+        "fr": "Relit les calendriers Outlook de chaque utilisateur relié, sans attendre la prochaine synchronisation.",
+        "de": "Liest die Outlook-Kalender aller verknüpften Benutzer erneut, ohne auf die nächste Synchronisierung zu warten.",
+        "es": "Vuelve a leer los calendarios de Outlook de cada usuario vinculado, sin esperar a la próxima sincronización."
+      }
+    }
+  ],
+  "widgets": [
+    {
+      "key": "accounts",
+      "icon": "calendar",
+      "label": {
+        "en": "Outlook calendars",
+        "fr": "Agendas Outlook",
+        "de": "Outlook-Kalender",
+        "es": "Calendarios Outlook"
+      },
+      "description": {
+        "en": "Who is linked to Microsoft, the calendars and events synchronized, and a sync button.",
+        "fr": "Qui est relié à Microsoft, les calendriers et événements synchronisés, et un bouton de synchro.",
+        "de": "Wer mit Microsoft verknüpft ist, synchronisierte Kalender und Ereignisse und eine Sync-Taste.",
+        "es": "Quién está vinculado a Microsoft, calendarios y eventos sincronizados y un botón de sincronizar."
+      }
+    }
+  ],
+  "scene_triggers": [
+    {
+      "key": "link_required",
+      "label": {
+        "en": "Outlook: a user must sign in",
+        "fr": "Outlook : un utilisateur doit se connecter",
+        "de": "Outlook: Ein Benutzer muss sich anmelden",
+        "es": "Outlook: un usuario debe iniciar sesión"
+      },
+      "description": {
+        "en": "A user enabled “My calendars” (new), or Microsoft no longer accepts their sign-in (revoked): their sign-in code is in their calendars.",
+        "fr": "Un utilisateur a activé « Mes calendriers » (nouveau), ou Microsoft n’accepte plus sa connexion (révoquée) : son code est dans ses calendriers.",
+        "de": "Ein Benutzer hat „Meine Kalender“ aktiviert (neu), oder Microsoft akzeptiert seine Anmeldung nicht mehr (widerrufen): Sein Code steht in seinen Kalendern.",
+        "es": "Un usuario ha activado «Mis calendarios» (nuevo), o Microsoft ya no acepta su inicio de sesión (revocado): su código está en sus calendarios."
+      },
+      "fields": [
+        {
+          "key": "reason",
+          "type": "select",
+          "required": false,
+          "label": {
+            "en": "Only for",
+            "fr": "Seulement pour",
+            "de": "Nur bei",
+            "es": "Solo para"
+          },
+          "description": {
+            "en": "Leave empty for both.",
+            "fr": "Laissez vide pour les deux.",
+            "de": "Leer lassen für beide.",
+            "es": "Déjelo vacío para ambos."
+          },
+          "options": [
+            {
+              "value": "new",
+              "label": {
+                "en": "New user",
+                "fr": "Nouvel utilisateur",
+                "de": "Neuer Benutzer",
+                "es": "Usuario nuevo"
+              }
+            },
+            {
+              "value": "revoked",
+              "label": {
+                "en": "Sign-in revoked",
+                "fr": "Connexion révoquée",
+                "de": "Anmeldung widerrufen",
+                "es": "Sesión revocada"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "user",
+          "type": "string",
+          "label": {
+            "en": "User (selector)",
+            "fr": "Utilisateur (sélecteur)",
+            "de": "Benutzer (Selektor)",
+            "es": "Usuario (selector)"
+          }
+        },
+        {
+          "key": "first_name",
+          "type": "string",
+          "label": {
+            "en": "First name of the user",
+            "fr": "Prénom de l’utilisateur",
+            "de": "Vorname des Benutzers",
+            "es": "Nombre del usuario"
+          }
+        },
+        {
+          "key": "reason",
+          "type": "string",
+          "label": {
+            "en": "Reason",
+            "fr": "Raison",
+            "de": "Grund",
+            "es": "Motivo"
+          }
+        }
+      ]
+    },
+    {
+      "key": "linked",
+      "label": {
+        "en": "Outlook: a user signed in",
+        "fr": "Outlook : un utilisateur s’est connecté",
+        "de": "Outlook: Ein Benutzer hat sich angemeldet",
+        "es": "Outlook: un usuario ha iniciado sesión"
+      },
+      "description": {
+        "en": "A user linked their Microsoft account: their calendars are coming.",
+        "fr": "Un utilisateur a relié son compte Microsoft : ses calendriers arrivent.",
+        "de": "Ein Benutzer hat sein Microsoft-Konto verknüpft: Seine Kalender kommen.",
+        "es": "Un usuario ha vinculado su cuenta de Microsoft: sus calendarios llegan."
+      },
+      "variables": [
+        {
+          "key": "user",
+          "type": "string",
+          "label": {
+            "en": "User (selector)",
+            "fr": "Utilisateur (sélecteur)",
+            "de": "Benutzer (Selektor)",
+            "es": "Usuario (selector)"
+          }
+        },
+        {
+          "key": "first_name",
+          "type": "string",
+          "label": {
+            "en": "First name of the user",
+            "fr": "Prénom de l’utilisateur",
+            "de": "Vorname des Benutzers",
+            "es": "Nombre del usuario"
+          }
+        },
+        {
+          "key": "account",
+          "type": "string",
+          "label": {
+            "en": "Microsoft account",
+            "fr": "Compte Microsoft",
+            "de": "Microsoft-Konto",
+            "es": "Cuenta de Microsoft"
+          }
+        }
+      ]
+    },
+    {
+      "key": "sync_error",
+      "label": {
+        "en": "Outlook: sync fails",
+        "fr": "Outlook : la synchro échoue",
+        "de": "Outlook: Synchronisierung schlägt fehl",
+        "es": "Outlook: la sincronización falla"
+      },
+      "description": {
+        "en": "Reading the Outlook calendars of a user failed. Once per failure and user, not at every sync.",
+        "fr": "La lecture des calendriers Outlook d’un utilisateur a échoué. Une fois par panne et par utilisateur, pas à chaque synchro.",
+        "de": "Das Lesen der Outlook-Kalender eines Benutzers ist fehlgeschlagen. Einmal pro Ausfall und Benutzer, nicht bei jeder Synchronisierung.",
+        "es": "La lectura de los calendarios de Outlook de un usuario ha fallado. Una vez por fallo y usuario, no en cada sincronización."
+      },
+      "fields": [
+        {
+          "key": "kind",
+          "type": "select",
+          "required": false,
+          "label": {
+            "en": "Only for",
+            "fr": "Seulement pour",
+            "de": "Nur bei",
+            "es": "Solo para"
+          },
+          "description": {
+            "en": "Leave empty for any failure.",
+            "fr": "Laissez vide pour toute panne.",
+            "de": "Leer lassen für jeden Ausfall.",
+            "es": "Déjelo vacío para cualquier fallo."
+          },
+          "options": [
+            {
+              "value": "app",
+              "label": {
+                "en": "App refused",
+                "fr": "Application refusée",
+                "de": "App abgelehnt",
+                "es": "Aplicación rechazada"
+              }
+            },
+            {
+              "value": "forbidden",
+              "label": {
+                "en": "Access denied",
+                "fr": "Accès refusé",
+                "de": "Zugriff verweigert",
+                "es": "Acceso denegado"
+              }
+            },
+            {
+              "value": "not_found",
+              "label": {
+                "en": "No mailbox",
+                "fr": "Pas de boîte mail",
+                "de": "Kein Postfach",
+                "es": "Sin buzón"
+              }
+            },
+            {
+              "value": "throttled",
+              "label": {
+                "en": "Throttled",
+                "fr": "Trop de requêtes",
+                "de": "Gedrosselt",
+                "es": "Limitado"
+              }
+            },
+            {
+              "value": "unreachable",
+              "label": {
+                "en": "Microsoft unreachable",
+                "fr": "Microsoft injoignable",
+                "de": "Microsoft nicht erreichbar",
+                "es": "Microsoft inaccesible"
+              }
+            },
+            {
+              "value": "server",
+              "label": {
+                "en": "Microsoft error",
+                "fr": "Erreur Microsoft",
+                "de": "Microsoft-Fehler",
+                "es": "Error de Microsoft"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "user",
+          "type": "string",
+          "label": {
+            "en": "User (selector)",
+            "fr": "Utilisateur (sélecteur)",
+            "de": "Benutzer (Selektor)",
+            "es": "Usuario (selector)"
+          }
+        },
+        {
+          "key": "first_name",
+          "type": "string",
+          "label": {
+            "en": "First name of the user",
+            "fr": "Prénom de l’utilisateur",
+            "de": "Vorname des Benutzers",
+            "es": "Nombre del usuario"
+          }
+        },
+        {
+          "key": "kind",
+          "type": "string",
+          "label": {
+            "en": "Kind of failure",
+            "fr": "Type de panne",
+            "de": "Art des Ausfalls",
+            "es": "Tipo de fallo"
+          }
+        },
+        {
+          "key": "message",
+          "type": "string",
+          "label": {
+            "en": "Error message",
+            "fr": "Message d’erreur",
+            "de": "Fehlermeldung",
+            "es": "Mensaje de error"
+          }
+        }
+      ]
+    },
+    {
+      "key": "sync_recovered",
+      "label": {
+        "en": "Outlook: sync works again",
+        "fr": "Outlook : la synchro refonctionne",
+        "de": "Outlook: Synchronisierung geht wieder",
+        "es": "Outlook: la sincronización vuelve a funcionar"
+      },
+      "description": {
+        "en": "The first good sync of a user after a failure.",
+        "fr": "La première bonne synchro d’un utilisateur après une panne.",
+        "de": "Die erste erfolgreiche Synchronisierung eines Benutzers nach einem Ausfall.",
+        "es": "La primera sincronización correcta de un usuario tras un fallo."
+      },
+      "variables": [
+        {
+          "key": "user",
+          "type": "string",
+          "label": {
+            "en": "User (selector)",
+            "fr": "Utilisateur (sélecteur)",
+            "de": "Benutzer (Selektor)",
+            "es": "Usuario (selector)"
+          }
+        },
+        {
+          "key": "first_name",
+          "type": "string",
+          "label": {
+            "en": "First name of the user",
+            "fr": "Prénom de l’utilisateur",
+            "de": "Vorname des Benutzers",
+            "es": "Nombre del usuario"
+          }
+        },
+        {
+          "key": "down_minutes",
+          "type": "number",
+          "label": {
+            "en": "Minutes of failure",
+            "fr": "Minutes de panne",
+            "de": "Minuten des Ausfalls",
+            "es": "Minutos de fallo"
+          }
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "sync_now",
+      "label": {
+        "en": "Outlook: sync now",
+        "fr": "Outlook : synchroniser maintenant",
+        "de": "Outlook: jetzt synchronisieren",
+        "es": "Outlook: sincronizar ahora"
+      },
+      "description": {
+        "en": "Reads the Outlook calendars of every linked user again (before a scene that looks at today’s events).",
+        "fr": "Relit les calendriers Outlook de chaque utilisateur relié (avant une scène qui regarde les événements du jour).",
+        "de": "Liest die Outlook-Kalender aller verknüpften Benutzer erneut (vor einer Szene, die die heutigen Ereignisse prüft).",
+        "es": "Vuelve a leer los calendarios de Outlook de cada usuario vinculado (antes de una escena que mira los eventos del día)."
+      },
+      "timeout_seconds": 120,
+      "fields": [],
+      "outputs": [
+        {
+          "key": "users",
+          "type": "number",
+          "label": {
+            "en": "Users synchronized",
+            "fr": "Utilisateurs synchronisés",
+            "de": "Synchronisierte Benutzer",
+            "es": "Usuarios sincronizados"
+          }
+        },
+        {
+          "key": "events",
+          "type": "number",
+          "label": {
+            "en": "Events synchronized",
+            "fr": "Événements synchronisés",
+            "de": "Synchronisierte Ereignisse",
+            "es": "Eventos sincronizados"
+          }
+        }
+      ]
+    }
+  ]
+}

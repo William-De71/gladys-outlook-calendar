@@ -1,0 +1,157 @@
+{
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "options": []
+    },
+    {
+      "key": "client_id",
+      "type": "string",
+      "options": []
+    },
+    {
+      "key": "tenant",
+      "type": "string",
+      "options": []
+    },
+    {
+      "key": "sync_minutes",
+      "type": "select",
+      "options": ["5", "15", "30", "60"]
+    },
+    {
+      "key": "horizon_months",
+      "type": "select",
+      "options": ["3", "6", "12"]
+    }
+  ],
+  "account_schema": [
+    {
+      "key": "account_intro",
+      "type": "section",
+      "options": []
+    },
+    {
+      "key": "private_events",
+      "type": "select",
+      "options": ["busy", "show", "skip"]
+    },
+    {
+      "key": "declined_events",
+      "type": "select",
+      "options": ["skip", "show"]
+    }
+  ],
+  "actions": ["check_app", "sync_now"],
+  "widgets": [
+    {
+      "key": "accounts",
+      "settings": []
+    }
+  ],
+  "scene_triggers": [
+    {
+      "key": "link_required",
+      "fields": [
+        {
+          "key": "reason",
+          "options": ["new", "revoked"]
+        }
+      ],
+      "variables": [
+        {
+          "key": "user",
+          "type": "string"
+        },
+        {
+          "key": "first_name",
+          "type": "string"
+        },
+        {
+          "key": "reason",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "key": "linked",
+      "fields": [],
+      "variables": [
+        {
+          "key": "user",
+          "type": "string"
+        },
+        {
+          "key": "first_name",
+          "type": "string"
+        },
+        {
+          "key": "account",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "key": "sync_error",
+      "fields": [
+        {
+          "key": "kind",
+          "options": ["app", "forbidden", "not_found", "throttled", "unreachable", "server"]
+        }
+      ],
+      "variables": [
+        {
+          "key": "user",
+          "type": "string"
+        },
+        {
+          "key": "first_name",
+          "type": "string"
+        },
+        {
+          "key": "kind",
+          "type": "string"
+        },
+        {
+          "key": "message",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "key": "sync_recovered",
+      "fields": [],
+      "variables": [
+        {
+          "key": "user",
+          "type": "string"
+        },
+        {
+          "key": "first_name",
+          "type": "string"
+        },
+        {
+          "key": "down_minutes",
+          "type": "number"
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "sync_now",
+      "fields": [],
+      "outputs": [
+        {
+          "key": "users",
+          "type": "number"
+        },
+        {
+          "key": "events",
+          "type": "number"
+        }
+      ]
+    }
+  ]
+}

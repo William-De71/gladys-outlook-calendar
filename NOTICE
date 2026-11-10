@@ -1,0 +1,13 @@
+Gladys Outlook Calendar integration
+Copyright 2026 William-De71
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+It reads the Outlook calendars of the users of a Gladys Assistant instance
+through Microsoft Graph (https://graph.microsoft.com), read-only, with the
+Microsoft account each user links and the app registration of the
+administrator, and publishes them to Gladys.
+
+Microsoft, Outlook, Microsoft 365 and the Outlook logo are trademarks of the
+Microsoft group of companies. This project is not affiliated with, endorsed or
+sponsored by Microsoft.
